@@ -1,9 +1,9 @@
 .assets
 .env
 *.pyc
+.idea/
 dist/
 build/
-docs/
 *.egg-info/
 *.egg
 *.pyc
