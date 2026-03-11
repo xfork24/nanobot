@@ -29,13 +29,11 @@
 | **[工具开发指南](./TOOL_DEVELOPMENT.md)** | 如何创建自定义工具 | 开发者 |
 | **[渠道开发指南](./CHANNEL_DEVELOPMENT.md)** | 如何添加新渠道 | 开发者 |
 | **[技能开发指南](./SKILL_DEVELOPMENT.md)** | 如何创建技能 | 所有用户 |
-| **[提供商集成指南](./PROVIDER_INTEGRATION.md)** | 如何添加新的 LLM 提供商 | 开发者 |
 
 ### 🎓 学习资源
 
 | 资源 | 描述 |
 |------|------|
-| **[视频教程](./VIDEO_TUTORIALS.md)** | 视频教程链接 |
 | **[常见问题](./FAQ.md)** | 常见问题解答 |
 | **[故障排除](./TROUBLESHOOTING.md)** | 问题排查指南 |
 | **[最佳实践](./BEST_PRACTICES.md)** | 使用和开发最佳实践 |
