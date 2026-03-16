@@ -116,3 +116,9 @@ ignore = ["E501"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+addopts = "-W ignore::DeprecationWarning"
+filterwarnings = [
+    "ignore::DeprecationWarning:lark_oapi",
+    "ignore::DeprecationWarning:google.protobuf",
+    "ignore:.*urllib3.*",
+]
