@@ -75,16 +75,11 @@ class ExecTool(Tool):
             "required": ["command"],
         }
 
-    async def execute(
-        self, command: str, working_dir: str | None = None,
-        timeout: int | None = None, **kwargs: Any,
-    ) -> str:
+    async def execute(self, command: str, working_dir: str | None = None, **kwargs: Any) -> str:
         cwd = working_dir or self.working_dir or os.getcwd()
         guard_error = self._guard_command(command, cwd)
         if guard_error:
             return guard_error
-
-        effective_timeout = min(timeout or self.timeout, self._MAX_TIMEOUT)
 
         env = os.environ.copy()
         if self.path_append:
@@ -110,7 +105,7 @@ class ExecTool(Tool):
                     await asyncio.wait_for(process.wait(), timeout=5.0)
                 except asyncio.TimeoutError:
                     pass
-                return f"Error: Command timed out after {effective_timeout} seconds"
+                return f"Error: Command timed out after {self.timeout} seconds"
 
             output_parts = []
 
@@ -122,19 +117,15 @@ class ExecTool(Tool):
                 if stderr_text.strip():
                     output_parts.append(f"STDERR:\n{stderr_text}")
 
-            output_parts.append(f"\nExit code: {process.returncode}")
+            if process.returncode != 0:
+                output_parts.append(f"\nExit code: {process.returncode}")
 
             result = "\n".join(output_parts) if output_parts else "(no output)"
 
-            # Head + tail truncation to preserve both start and end of output
-            max_len = self._MAX_OUTPUT
+            # Truncate very long output
+            max_len = 10000
             if len(result) > max_len:
-                half = max_len // 2
-                result = (
-                    result[:half]
-                    + f"\n\n... ({len(result) - max_len:,} chars truncated) ...\n\n"
-                    + result[-half:]
-                )
+                result = result[:max_len] + f"\n... (truncated, {len(result) - max_len} more chars)"
 
             return result
 

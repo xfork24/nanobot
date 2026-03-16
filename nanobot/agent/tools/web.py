@@ -221,8 +221,8 @@ class WebFetchTool(Tool):
         "type": "object",
         "properties": {
             "url": {"type": "string", "description": "URL to fetch"},
-            "extractMode": {"type": "string", "enum": ["markdown", "text"], "default": "markdown"},
-            "maxChars": {"type": "integer", "minimum": 100},
+            "extract_mode": {"type": "string", "enum": ["markdown", "text"], "default": "markdown"},
+            "maxChars": {"type": "integer", "minimum": 100}
         },
         "required": ["url"],
     }
@@ -231,9 +231,11 @@ class WebFetchTool(Tool):
         self.max_chars = max_chars
         self.proxy = proxy
 
-    async def execute(self, url: str, extractMode: str = "markdown", maxChars: int | None = None, **kwargs: Any) -> str:
-        max_chars = maxChars or self.max_chars
-        is_valid, error_msg = _validate_url_safe(url)
+    async def execute(self, url: str, extract_mode: str = "markdown", max_chars: int | None = None, **kwargs: Any) -> str:
+        from readability import Document
+
+        max_chars = max_chars or self.max_chars
+        is_valid, error_msg = _validate_url(url)
         if not is_valid:
             return json.dumps({"error": f"URL validation failed: {error_msg}", "url": url}, ensure_ascii=False)
 
@@ -312,7 +314,6 @@ class WebFetchTool(Tool):
             truncated = len(text) > max_chars
             if truncated:
                 text = text[:max_chars]
-            text = f"{_UNTRUSTED_BANNER}\n\n{text}"
 
             return json.dumps({
                 "url": url, "finalUrl": str(r.url), "status": r.status_code,
